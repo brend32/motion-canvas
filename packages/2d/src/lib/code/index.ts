@@ -9,5 +9,6 @@ export * from './CodeSignal';
 export * from './CodeTokenizer';
 export * from './DefaultHighlightStyle';
 export * from './LezerHighlighter';
+export * from './ShikiCodeHighlighter';
 export * from './diff';
 export * from './extractRange';
