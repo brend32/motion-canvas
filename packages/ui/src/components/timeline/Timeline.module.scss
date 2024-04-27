@@ -199,6 +199,14 @@
   }
 }
 
+.labelDurationText {
+  position: absolute;
+  margin: 0;
+  top: 32px;
+  width: 100%;
+  text-align: right;
+}
+
 .labelClipStart {
   box-sizing: content-box;
   position: absolute;

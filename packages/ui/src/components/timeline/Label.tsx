@@ -21,6 +21,12 @@ export function Label({event, scene}: LabelProps) {
     setEventTime(event.offset);
   }, [event.offset]);
 
+  const firstSceneFrameTime = scene.playback.framesToSeconds(scene.firstFrame);
+  const labelStartTime = firstSceneFrameTime + event.initialTime;
+  const labelDurationInFrames =
+    scene.playback.secondsToFrames(labelStartTime + eventTime) -
+    scene.playback.secondsToFrames(labelStartTime);
+
   return (
     <>
       <div
@@ -38,8 +44,7 @@ export function Label({event, scene}: LabelProps) {
               event.initialTime + Math.max(0, eventTime);
           } else if (e.button === 1) {
             player.requestSeek(
-              scene.firstFrame +
-                player.status.secondsToFrames(event.initialTime + event.offset),
+              player.status.secondsToFrames(labelStartTime + event.offset),
             );
           }
         }}
@@ -69,10 +74,9 @@ export function Label({event, scene}: LabelProps) {
         data-name={event.name}
         style={{
           left: `${framesToPercents(
-            scene.firstFrame +
-              scene.playback.secondsToFrames(
-                event.initialTime + Math.max(0, eventTime),
-              ),
+            scene.playback.secondsToFrames(
+              labelStartTime + Math.max(0, eventTime),
+            ),
           )}%`,
         }}
       />
@@ -80,7 +84,9 @@ export function Label({event, scene}: LabelProps) {
         className={styles.labelClipTarget}
         style={{
           left: `${framesToPercents(
-            scene.firstFrame + scene.playback.secondsToFrames(event.targetTime),
+            scene.playback.secondsToFrames(
+              firstSceneFrameTime + event.targetTime,
+            ),
           )}%`,
         }}
       />
@@ -88,15 +94,18 @@ export function Label({event, scene}: LabelProps) {
         className={styles.labelClipStart}
         style={{
           left: `${framesToPercents(
-            scene.firstFrame +
-              scene.playback.secondsToFrames(event.initialTime),
+            scene.playback.secondsToFrames(labelStartTime),
           )}%`,
-          width: `${Math.max(
+          width: `calc(${Math.max(
             0,
-            framesToPercents(scene.playback.secondsToFrames(eventTime)),
-          )}%`,
+            framesToPercents(labelDurationInFrames),
+          )}% - 8px)`,
         }}
-      />
+      >
+        <p className={styles.labelDurationText}>
+          {`${eventTime.toFixed(2)} [${labelDurationInFrames}]`}
+        </p>
+      </div>
     </>
   );
 }
