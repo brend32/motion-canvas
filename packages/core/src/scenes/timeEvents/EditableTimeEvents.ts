@@ -105,7 +105,7 @@ export class EditableTimeEvents implements TimeEvents {
 
     this.registeredEvents.set(name, event);
 
-    return event.offset;
+    return event.offset ?? 0; // NaN forces infinite loop without possibility to recover
   }
 
   /**
