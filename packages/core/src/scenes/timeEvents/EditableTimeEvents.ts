@@ -80,11 +80,12 @@ export class EditableTimeEvents implements TimeEvents {
       }
 
       if (newEvent.initialTime !== initialTime) {
-        newEvent.initialTime = initialTime;
+        newEvent.initialTime = initialTime || 0;
         changed = true;
       }
 
-      const offset = Math.max(0, newEvent.targetTime - newEvent.initialTime);
+      const offset =
+        Math.max(0, newEvent.targetTime - newEvent.initialTime) || 0;
       if (this.preserveTiming && newEvent.offset !== offset) {
         newEvent.offset = offset;
         changed = true;
@@ -93,7 +94,7 @@ export class EditableTimeEvents implements TimeEvents {
       const target = newEvent.initialTime + newEvent.offset;
       if (!this.preserveTiming && newEvent.targetTime !== target) {
         this.didEventsChange = true;
-        newEvent.targetTime = target;
+        newEvent.targetTime = target || 0;
         changed = true;
       }
 
@@ -105,7 +106,7 @@ export class EditableTimeEvents implements TimeEvents {
 
     this.registeredEvents.set(name, event);
 
-    return event.offset ?? 0; // NaN forces infinite loop without possibility to recover
+    return event.offset;
   }
 
   /**
